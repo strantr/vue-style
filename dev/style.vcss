@@ -1,0 +1,5 @@
+body {
+    font-size: -v-font-size;
+    background: -v-primary-bg;
+    transition: all 0.3s;
+}

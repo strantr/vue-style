@@ -1,6 +1,11 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require("./webpack.config.js");
 common.entry = "./dev/index.ts";
+common.resolve.extensions.push(".vcss");
+common.module.rules.push({
+    test: /\.vcss$/,
+    loaders: ["raw-loader", "sass-loader"]
+});
 common.plugins = [new HtmlWebpackPlugin({
     template: "./dev/index.html"
 })];

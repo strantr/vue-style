@@ -1,5 +1,4 @@
 dist
-vuety-*.tgz
 test/bundle.js
 test/bundle.js.map
 
