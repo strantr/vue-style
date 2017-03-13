@@ -8,12 +8,6 @@ const el = document.createElement("div");
 document.body.appendChild(el);
 
 Vue.use(VueStyle, {
-    mixins: {
-        colors(this: {}, basis: string) {
-            console.log(this);
-            return "background: " + this[basis + "-bg"] + "; color: white;";
-        }
-    },
     defaults: {
         "primary-bg": "green",
         "font-size": "50px"
