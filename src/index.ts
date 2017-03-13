@@ -1,9 +1,10 @@
+/// <reference path="vue.d.ts" />
+
 import * as Vue from "vue";
 import { StyleHandler } from "./styleHandler";
 
 export interface VueStyleOptions {
     defaults: { [k: string]: string };
-    mixins: { [k: string]: (...args: any[]) => string | {} };
 }
 
 interface Handler {
@@ -15,9 +16,15 @@ const instances: {
     [stylesheet: string]: Handler
 } = {};
 
+export const eventId: string = "vue-style.update";
+
 export const VueStyle: Vue.PluginObject<VueStyleOptions> = {
-    install(v: typeof Vue, options: VueStyleOptions) {
-        let variables: {} = Object.assign({}, options.defaults);
+    update(vue: Vue, updates: {}) {
+        vue.$root.$emit(eventId, updates);
+    },
+    install(v: typeof Vue, options?: VueStyleOptions) {
+        let opts: VueStyleOptions = options || { defaults: {} };
+        if (!opts.defaults) opts.defaults = {};
         Vue.mixin({
             beforeCreate() {
                 if (this.$options.stylesheet) {
@@ -26,7 +33,7 @@ export const VueStyle: Vue.PluginObject<VueStyleOptions> = {
                         instance = {
                             instance: new StyleHandler({
                                 propsData: {
-                                    variables: variables,
+                                    variables: opts.defaults,
                                     stylesheet: this.$options.stylesheet,
                                 }
                             }).$mount(document.head.appendChild(document.createElement("div"))),
@@ -34,9 +41,9 @@ export const VueStyle: Vue.PluginObject<VueStyleOptions> = {
                         };
                     }
                     if (this === this.$root) {
-                        this.$on("vue-style.update", (update: {}) => {
+                        this.$on(eventId, (update: {}) => {
                             Object.keys(update).forEach(u => {
-                                Vue.set(variables, u, update[u]);
+                                Vue.set(opts.defaults, u, update[u]);
                                 instance.instance.update(update);
                             });
                         });
