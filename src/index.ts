@@ -16,12 +16,12 @@ const instances: {
     [stylesheet: string]: Handler
 } = {};
 
-export const eventId: string = "vue-style.update";
+export const UpdateEventId: string = "vue-style.update";
 
 export const VueStyle = {
     update(vue: Vue, updates: {}) {
         return new Promise(resolve => {
-            vue.$root.$emit(eventId, updates, resolve);
+            vue.$root.$emit(UpdateEventId, updates, resolve);
         });
     },
     install(v: typeof Vue, options?: VueStyleOptions) {
@@ -42,7 +42,7 @@ export const VueStyle = {
                         };
                     }
                     if (this === this.$root) {
-                        this.$on(eventId, async (update: {}, callback?: () => void) => {
+                        this.$on(UpdateEventId, async (update: {}, callback?: () => void) => {
                             Object.keys(update).forEach(u => {
                                 opts.defaults[u] = update[u];
                             });
