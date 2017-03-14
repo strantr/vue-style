@@ -4,7 +4,7 @@
   "description": "Vue.js style component allowing for application theming via (v)CSS variables",
   "main": "dist/bundle.js",
   "scripts": {
-    "build": "webpack --config webpack.dev.config.js",
+    "build": "webpack --config webpack.config.js",
     "prepublish": "npm run build && npm run test",
     "pretest": "webpack --config test/webpack.config.js",
     "test": "mocha test/bundle.js --require chai --require jsdom-global/register",
@@ -49,5 +49,9 @@
     "typescript": "^2.2.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts"
 }
