@@ -1,7 +1,11 @@
-/// <reference path="vue.d.ts" />
-
 import * as Vue from "vue";
 import { StyleHandler } from "./styleHandler";
+
+declare module "vue/types/options" {
+    interface ComponentOptions<V extends Vue> {
+        stylesheet?: string;
+    }
+}
 
 export interface VueStyleOptions {
     defaults: { [k: string]: string };
