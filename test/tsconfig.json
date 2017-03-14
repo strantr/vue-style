@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "strictNullChecks": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "emitDecoratorMetadata": false,
+        "experimentalDecorators": true,
+        "target": "es5",
+        "lib": [
+            "es2015",
+            "dom"
+        ],
+        "sourceMap": true,
+        "module": "commonjs",
+        "outDir": "./",
+        "declaration": false
+    },
+    "exclude": []
+}

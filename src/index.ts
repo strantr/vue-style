@@ -18,9 +18,11 @@ const instances: {
 
 export const eventId: string = "vue-style.update";
 
-export const VueStyle: Vue.PluginObject<VueStyleOptions> = {
+export const VueStyle = {
     update(vue: Vue, updates: {}) {
-        vue.$root.$emit(eventId, updates);
+        return new Promise(resolve => {
+            vue.$root.$emit(eventId, updates, resolve);
+        });
     },
     install(v: typeof Vue, options?: VueStyleOptions) {
         let opts: VueStyleOptions = options || { defaults: {} };
@@ -33,19 +35,22 @@ export const VueStyle: Vue.PluginObject<VueStyleOptions> = {
                         instance = {
                             instance: new StyleHandler({
                                 propsData: {
-                                    variables: opts.defaults,
-                                    stylesheet: this.$options.stylesheet,
+                                    stylesheet: this.$options.stylesheet
                                 }
-                            }).$mount(document.head.appendChild(document.createElement("div"))),
+                            }).update(opts.defaults).$mount(document.head.appendChild(document.createElement("div"))),
                             count: 1
                         };
                     }
                     if (this === this.$root) {
-                        this.$on(eventId, (update: {}) => {
+                        this.$on(eventId, async (update: {}, callback?: () => void) => {
                             Object.keys(update).forEach(u => {
-                                Vue.set(opts.defaults, u, update[u]);
-                                instance.instance.update(update);
+                                opts.defaults[u] = update[u];
                             });
+                            instance.instance.update(update);
+                            await instance.instance.$nextTick();
+                            if (callback) {
+                                callback();
+                            }
                         });
                     }
                 }

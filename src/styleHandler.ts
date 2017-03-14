@@ -5,8 +5,8 @@ import { Component, Lifecycle, Prop, Render } from "vuety";
     private _rendered: string | undefined;
     private _parts: (string | (() => string))[];
     private _bindings: string[];
+    private _variables: {};
 
-    @Prop protected variables: {};
     @Prop protected stylesheet: string;
 
     @Lifecycle protected created() {
@@ -18,7 +18,7 @@ import { Component, Lifecycle, Prop, Render } from "vuety";
         while ((match = exp.exec(this.stylesheet))) {
             const m = match;
             this._parts.push(this.stylesheet.substring(pos, m.index) + ":");
-            this._parts.push(() => this.variables[m[1]] || (console.warn("Unknown variable " + m[1]), "unset"));
+            this._parts.push(() => this._variables[m[1]] || (console.warn("Unknown variable " + m[1]), "unset"));
             pos = m.index + m[0].length;
             this._bindings.push(m[1]);
         }
@@ -42,11 +42,17 @@ import { Component, Lifecycle, Prop, Render } from "vuety";
     }
 
     public update(variables: {}) {
+        let render = false;
         Object.keys(variables).forEach(v => {
             if (this._bindings.indexOf(v) > -1) {
                 this._rendered = undefined;
+                render = true;
             }
         });
-        Object.assign(this.variables, variables);
+        this._variables = Object.assign(this._variables || {}, variables);
+        if (render) {
+            this.$forceUpdate();
+        }
+        return this;
     }
 }
