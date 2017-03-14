@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { VueStyle, VueStyleOptions, eventId } from "../src";
+import { VueStyle, VueStyleOptions, UpdateEventId } from "../src";
 import * as Vue from "vue";
 import { Component } from "vuety";
 
@@ -44,7 +44,7 @@ describe("Component", () => {
         const a = new A();
         a.$mount(document.body.appendChild(document.createElement("div")));
         await new Promise(resolve => {
-            a.$emit(eventId, { "bg-color": "rgb(0, 0, 3)" }, () => {
+            a.$emit(UpdateEventId, { "bg-color": "rgb(0, 0, 3)" }, () => {
                 resolve();
             });
         });
