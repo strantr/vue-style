@@ -58,7 +58,14 @@ class MyComponent extends Vue {
 The stylesheet will be injected into the page on the creation of the first instance of this component.
 
 #### Webpack
-When using webpack to load the stylesheet 
+When using webpack to load the stylesheet you will need to load your stylesheets using `raw-loader`.
+The example above shows requiring style.vcss, an example loader using sass would be:
+```json
+{
+    test: /\.vcss$/,
+    loaders: ["raw-loader", "sass-loader"]
+}
+```
 
 ### Updating variables
 
