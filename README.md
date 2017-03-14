@@ -60,7 +60,7 @@ The stylesheet will be injected into the page on the creation of the first insta
 #### Webpack
 When using webpack to load the stylesheet you will need to load your stylesheets using `raw-loader`.
 The example above shows requiring style.vcss, an example loader using sass would be:
-```json
+```typescript
 {
     test: /\.vcss$/,
     loaders: ["raw-loader", "sass-loader"]
