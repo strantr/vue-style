@@ -1,6 +1,6 @@
 /// <reference path="../src/vue.d.ts" />
 
-import * as Vue from "vue";
+import Vue from "vue";
 import { Component } from "vuety";
 import { VueStyle } from "../src";
 

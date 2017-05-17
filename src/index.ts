@@ -1,4 +1,4 @@
-import * as Vue from "vue";
+import Vue from "vue";
 import { StyleHandler } from "./styleHandler";
 
 declare module "vue/types/options" {
@@ -8,7 +8,7 @@ declare module "vue/types/options" {
 }
 
 export interface VueStyleOptions {
-    defaults: { [k: string]: string };
+    variables: { [k: string]: string };
 }
 
 interface Handler {
@@ -29,8 +29,8 @@ export const VueStyle = {
         });
     },
     install(v: typeof Vue, options?: VueStyleOptions) {
-        let opts: VueStyleOptions = options || { defaults: {} };
-        if (!opts.defaults) opts.defaults = {};
+        let opts: VueStyleOptions = options || { variables: {} };
+        if (!opts.variables) opts.variables = {};
         Vue.mixin({
             beforeCreate() {
                 if (this.$options.stylesheet) {
@@ -41,14 +41,14 @@ export const VueStyle = {
                                 propsData: {
                                     stylesheet: this.$options.stylesheet
                                 }
-                            }).update(opts.defaults).$mount(document.head.appendChild(document.createElement("div"))),
+                            }).update(opts.variables).$mount(document.head.appendChild(document.createElement("div"))),
                             count: 1
                         };
                     }
                     if (this === this.$root) {
                         this.$on(UpdateEventId, async (update: {}, callback?: () => void) => {
                             Object.keys(update).forEach(u => {
-                                opts.defaults[u] = update[u];
+                                opts.variables[u] = update[u];
                             });
                             instance.instance.update(update);
                             await instance.instance.$nextTick();

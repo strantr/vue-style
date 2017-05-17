@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import { VueStyle, VueStyleOptions, UpdateEventId } from "../src";
-import * as Vue from "vue";
+import Vue from "vue";
 import { Component } from "vuety";
 
 let styles: VueStyleOptions = {
-    defaults: {}
+    variables: {}
 };
 Vue.use(VueStyle, styles);
 
@@ -25,9 +25,9 @@ describe("Component", () => {
     });
 
     it("Should interpolate variables", async () => {
-        styles.defaults["bg-color"] = "rgb(0, 0, 1)";
+        styles.variables["bg-color"] = "rgb(0, 0, 1)";
         @Component({
-            stylesheet: "body {background: -v-bg-color}"
+            stylesheet: "body {background: var(--bg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
@@ -36,9 +36,9 @@ describe("Component", () => {
     });
 
     it("Should update variables on event", async () => {
-        styles.defaults["bg-color"] = "rgb(0, 0, 2)";
+        styles.variables["bg-color"] = "rgb(0, 0, 2)";
         @Component({
-            stylesheet: "body {background: -v-bg-color}"
+            stylesheet: "body {background: var(--bg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
@@ -55,9 +55,9 @@ describe("Component", () => {
     });
 
     it("Should update variables via function", async () => {
-        styles.defaults["bg-color"] = "rgb(0, 0, 4)";
+        styles.variables["bg-color"] = "rgb(0, 0, 4)";
         @Component({
-            stylesheet: "body {background: -v-bg-color}"
+            stylesheet: "body {background: var(--bg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
