@@ -28,8 +28,8 @@
   },
   "homepage": "https://github.com/strantr/vue-style#readme",
   "dependencies": {
-    "vue": "^2.2.2",
-    "vuety": "^2.0.0-beta.5"
+    "vue": "^2.3.3",
+    "vuety": "^2.1.0-beta.2"
   },
   "devDependencies": {
     "@types/chai": "^3.4.32",
