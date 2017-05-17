@@ -13,24 +13,24 @@ Import the module (e.g. `import { VueStyle } from "vue-style"`) and then call:
 
 ```typescript
 Vue.use(VueStyle, {
-    defaults: {
+    variables: {
         "primary-bg": "green",
         "font-size": "50px"
     }
 });
 ```
 
-Where defaults is an object containing each of the variables that you want to use in your CSS.
+Where variables is an object containing each of the variables that you want to use in your CSS.
 
 ### Creating a stylesheet
 
-You write a standard stylesheet (css, scss, less, etc.) and use `-v-*` where a variable should be interpolated, e.g. `-v-primary-bg` would return `green` from the variables above.
+You write a standard stylesheet (css, scss, less, etc.) and use `var(--variable-name)` where a variable should be interpolated, e.g. `var(--primary-bg)` would return `green` from the variables above.
 
 An example stylesheet using the variables in the example shown above:
 ```css
 body {
-    font-size: -v-font-size;
-    background: -v-primary-bg;
+    font-size: var(--font-size);
+    background: var(--primary-bg);
 }
 ```
 Giving a font size of 50px and a background color of green.
