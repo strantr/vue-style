@@ -1,5 +1,5 @@
 # vue-style
-A lightweight custom CSS variable plugin for [Vue.js](https://vuejs.org/) 2.0. 
+A lightweight custom CSS variable plugin for [Vue.js](https://vuejs.org/) 2.0.
 
 ## Installation
 
@@ -7,11 +7,13 @@ A lightweight custom CSS variable plugin for [Vue.js](https://vuejs.org/) 2.0.
 
 ## Usage
 
-### Importing the plugin
-
-Import the module (e.g. `import { VueStyle } from "vue-style"`) and then call:
+### Using the plugin
 
 ```typescript
+// Import the module
+import VueStyle from "vue-style";
+
+// Initialise the plugin
 Vue.use(VueStyle, {
     variables: {
         "primary-bg": "green",
@@ -20,8 +22,20 @@ Vue.use(VueStyle, {
 });
 ```
 
-Where variables is an object containing each of the variables that you want to use in your CSS.
+`variables` is an object containing each of the custom variables that you want to use in your CSS. All variables must exist at the beginning of the application, they cannot be added dynamically.
 
+Computed properties can be specified using property getters, in the example below the `primary-fg` property is computed based on the background color being dark or light:
+
+```typescript
+Vue.use(VueStyle, {
+    variables: {
+        "primary-bg": "green",
+        get "primary-fg"() {
+            return isDark(this["primary-bg"]) ? "white" : "black";
+        }
+    }
+});
+```
 ### Creating a stylesheet
 
 You write a standard stylesheet (css, scss, less, etc.) and use `var(--variable-name)` where a variable should be interpolated, e.g. `var(--primary-bg)` would return `green` from the variables above.
@@ -49,7 +63,7 @@ class MyComponent extends Vue {
 
 // Inline stylesheet
 @Component({
-    stylesheet: `body { background: -v-primary-bg; font-size: -v-font-size; }`,
+    stylesheet: `body { background: var(--primary-bg); font-size: var(--font-size); }`,
 })
 class MyComponent extends Vue {
     ...
@@ -69,16 +83,10 @@ The example above shows requiring style.vcss, an example loader using sass would
 
 ### Updating variables
 
-The style variables can be updated via raising an event on the root component:
+Each CSS variable is accessible via the `$style` member that is defined on each Vue component
 ```typescript
-import { UpdateEventId } from "vue-style";
-...
-this.$root.$emit(UpdateEventId, { "font-size": "10px", "primary-bg": "red" });
-```
-or by calling the update function
-```typescript
-import { VueStyle } from "vue-style";
-...
-/*Where this is a Vue component*/
-VueStyle.update(this, { "font-size": "10px", "primary-bg": "red" });
-```
+@Component(...) class Example {
+    @Lifecycle mounted() {
+        this.$style["primary-bg"] = "red";
+    }
+}

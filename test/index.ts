@@ -1,10 +1,15 @@
 import { expect } from "chai";
-import { VueStyle, VueStyleOptions, UpdateEventId } from "../src";
+import VueStyle from "../src";
 import Vue from "vue";
 import { Component } from "vuety";
 
-let styles: VueStyleOptions = {
-    variables: {}
+const styles = {
+    variables: {
+        "bg-color": "unset",
+        get "fg-color"(this: {}) {
+            return "rgb(" + this["bg-color"].substring(4).split("").reverse().join("").substr(1) + ")";
+        }
+    }
 };
 Vue.use(VueStyle, styles);
 
@@ -15,56 +20,70 @@ function reinsertNode() {
 }
 
 describe("Component", () => {
-    it("Should output styles to page", () => {
+    it("Should output styles to page", async () => {
         @Component({
-            stylesheet: "body {background: rgb(0, 0, 0)}"
+            stylesheet: "body {background: rgb(1, 2, 3)}"
         }) class A extends Vue {
         };
         new A().$mount(document.body.appendChild(document.createElement("div")));
-        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(0, 0, 0)");
+        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(1, 2, 3)");
     });
 
     it("Should interpolate variables", async () => {
-        styles.variables["bg-color"] = "rgb(0, 0, 1)";
+        styles.variables["bg-color"] = "rgb(4, 5, 6)";
         @Component({
             stylesheet: "body {background: var(--bg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
         a.$mount(document.body.appendChild(document.createElement("div")));
-        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(0, 0, 1)");
+        await a.$nextTick();
+        reinsertNode(); // Issue with jsdom not recalculating style elements on change of content
+        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(4, 5, 6)");
     });
 
-    it("Should update variables on event", async () => {
-        styles.variables["bg-color"] = "rgb(0, 0, 2)";
+    it("Should update variables", async () => {
+        styles.variables["bg-color"] = "rgb(7, 8, 9)";
         @Component({
             stylesheet: "body {background: var(--bg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
         a.$mount(document.body.appendChild(document.createElement("div")));
-        await new Promise(resolve => {
-            a.$emit(UpdateEventId, { "bg-color": "rgb(0, 0, 3)" }, () => {
-                resolve();
-            });
-        });
-
+        a.$style["bg-color"] = "rgb(10, 11, 12)";
+        await a.$nextTick();
         reinsertNode(); // Issue with jsdom not recalculating style elements on change of content
-
-        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(0, 0, 3)");
+        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(10, 11, 12)");
     });
 
-    it("Should update variables via function", async () => {
-        styles.variables["bg-color"] = "rgb(0, 0, 4)";
+    it("Should allow computed variables", async () => {
+        styles.variables["bg-color"] = "rgb(13, 14, 15)";
         @Component({
-            stylesheet: "body {background: var(--bg-color)}"
+            stylesheet: "body {color: var(--fg-color)}"
         }) class A extends Vue {
         };
         const a = new A();
         a.$mount(document.body.appendChild(document.createElement("div")));
-        await VueStyle.update(a, { "bg-color": "rgb(0, 0, 5)" });
+        await a.$nextTick();
         reinsertNode(); // Issue with jsdom not recalculating style elements on change of content
+        expect(window.getComputedStyle(document.body)["color"]).to.equal("rgb(51, 41, 31)");
+    });
 
-        expect(window.getComputedStyle(document.body)["background"]).to.equal("rgb(0, 0, 5)");
+    it("Should recompute computed variables", async () => {
+        styles.variables["bg-color"] = "rgb(16, 17, 18)";
+        @Component({
+            stylesheet: "body {color: var(--fg-color)}"
+        }) class A extends Vue {
+        };
+        const a = new A();
+        a.$mount(document.body.appendChild(document.createElement("div")));
+        await a.$nextTick();
+        reinsertNode(); // Issue with jsdom not recalculating style elements on change of content
+        expect(window.getComputedStyle(document.body)["color"]).to.equal("rgb(81, 71, 61)");
+
+        styles.variables["bg-color"] = "rgb(19, 20, 21)";
+        await a.$nextTick();
+        reinsertNode(); // Issue with jsdom not recalculating style elements on change of content
+        expect(window.getComputedStyle(document.body)["color"]).to.equal("rgb(12, 2, 91)");
     });
 });

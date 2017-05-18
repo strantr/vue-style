@@ -1,7 +1,7 @@
 {
   "name": "vue-style",
-  "version": "1.0.0-alpha.1",
-  "description": "Vue.js style component allowing for application theming via (v)CSS variables",
+  "version": "1.0.0-alpha.2",
+  "description": "Vue.js style component allowing for application theming via CSS variable syntax",
   "main": "dist/bundle.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
