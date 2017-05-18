@@ -8,7 +8,7 @@ module.exports = {
         libraryTarget: "commonjs2"
     },
     externals: {
-        vue: "Vue"
+        vue: "vue"
     },
     resolve: {
         extensions: [".ts", ".js"]
